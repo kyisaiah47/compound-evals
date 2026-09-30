@@ -23,6 +23,36 @@ const BYPASS_HEADERS = [
 
 const MAX_TTL = 86400;
 
+// The $5 ceiling (Isaiah, 2026-09-30: "5 is fine but dont go higher"). costs/cloudflare-budget.mjs
+// writes "1" to the BUDGET KV key "shed" when the month is on pace to pass the Workers Paid
+// allowance. While it reads "1", a third-party crawler that misses the cache gets a 503 instead
+// of a full render. Search engines, link-preview fetchers and people are never shed.
+const CRAWLER = /bot|crawl|spider|slurp|scrapy|python-requests|go-http-client|httpclient|ahrefs|semrush|mj12|petal|bytespider|gptbot|claude|perplexity|ccbot|amazonbot|meta-external/i;
+const ALWAYS_SERVED = /googlebot|google-inspectiontool|bingbot|duckduckbot|applebot|yandexbot|twitterbot|facebookexternalhit|linkedinbot|slackbot|discordbot|telegrambot|whatsapp|pinterest|redditbot|embedly|iframely/i;
+
+// Stage "2" also sheds headless browsers and HTTP libraries, which is the estate's own sweeps.
+const ROBOT = /headlesschrome|curl\/|node-fetch|undici|playwright|puppeteer|wget/i;
+
+async function shed(request, env) {
+  const ua = request.headers.get("user-agent") || "";
+  if (!env?.BUDGET || ALWAYS_SERVED.test(ua)) return false;
+  const crawler = CRAWLER.test(ua);
+  const robot = ROBOT.test(ua) || !ua;
+  if (!crawler && !robot) return false;
+  try {
+    const level = await env.BUDGET.get("shed", { cacheTtl: 300 });
+    return (level === "1" && crawler) || level === "2";
+  } catch {
+    return false;
+  }
+}
+
+const SHED_RESPONSE = () =>
+  new Response("503: crawl paused, retry later\n", {
+    status: 503,
+    headers: { "retry-after": "3600", "content-type": "text/plain", "cache-control": "no-store" },
+  });
+
 function ttlOf(res) {
   if (res.status !== 200 || res.headers.has("set-cookie")) return 0;
   const cc = (res.headers.get("cache-control") || "").toLowerCase();
@@ -35,14 +65,15 @@ export function withEdgeCache(fetchHandler) {
   return async function fetch(request, env, ctx) {
     const version = env?.CF_VERSION_METADATA?.id;
     const url = new URL(request.url);
+    const isPageGet = request.method === "GET" && !url.pathname.startsWith("/api/");
     if (
       !version ||
       typeof caches === "undefined" ||
-      request.method !== "GET" ||
+      !isPageGet ||
       url.search ||
-      url.pathname.startsWith("/api/") ||
       BYPASS_HEADERS.some((h) => request.headers.has(h))
     ) {
+      if (isPageGet && (await shed(request, env))) return SHED_RESPONSE();
       return fetchHandler(request, env, ctx);
     }
 
@@ -50,6 +81,7 @@ export function withEdgeCache(fetchHandler) {
     const cache = caches.default;
     const hit = await cache.match(key);
     if (hit) return hit;
+    if (await shed(request, env)) return SHED_RESPONSE();
 
     const res = await fetchHandler(request, env, ctx);
     const ttl = ttlOf(res);
