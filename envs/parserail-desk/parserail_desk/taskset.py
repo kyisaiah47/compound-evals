@@ -173,19 +173,19 @@ class DeskTask(vf.Task[DeskData, vf.State, DeskTaskConfig]):
 
     def _balance(self, account: str) -> int | None:
         return self._scalar(
-            "select balance_credits from kynth_credit_accounts where account_id = %s", (account,)
+            "select balance_credits from compound_credit_accounts where account_id = %s", (account,)
         )
 
     def _new_usage(self, account: str) -> list[dict]:
         return self._rows(
             "select id, endpoint, units, credits_burned, api_key_id, model, meta"
-            " from kynth_usage_events where account_id = %s and not (id = any(%s::uuid[]))",
+            " from compound_usage_events where account_id = %s and not (id = any(%s::uuid[]))",
             (account, SEEDED_USAGE_IDS),
         )
 
     def _new_ledger(self, account: str) -> list[dict]:
         return self._rows(
-            "select id, delta, reason, balance_after, ref from kynth_credit_ledger"
+            "select id, delta, reason, balance_after, ref from compound_credit_ledger"
             " where account_id = %s and not (id = any(%s::uuid[]))",
             (account, SEEDED_LEDGER_IDS),
         )
@@ -204,7 +204,7 @@ class MintTheIngestionKey(DeskTask):
         # a console show a live key called `ingestion`, and it leaves the key count unchanged, so
         # a count check alone would report the same failure for a completely different mistake.
         old = self._one(
-            "select revoked_at, label from kynth_api_keys where id = %s", (KEY_OLD_INGESTION,)
+            "select revoked_at, label from compound_api_keys where id = %s", (KEY_OLD_INGESTION,)
         )
         if old is None:
             return self._fail(
@@ -219,7 +219,7 @@ class MintTheIngestionKey(DeskTask):
             )
 
         new = self._rows(
-            "select id, account_id, key_prefix, key_hash, label, revoked_at from kynth_api_keys"
+            "select id, account_id, key_prefix, key_hash, label, revoked_at from compound_api_keys"
             " where not (id = any(%s::uuid[]))",
             (SEEDED_KEY_IDS,),
         )
@@ -290,7 +290,7 @@ class RevokeTheLeakedKey(DeskTask):
     @vf.reward(weight=1.0)
     async def the_leaked_key_alone_is_revoked(self, trace: vf.Trace) -> float:
         leaked = self._one(
-            "select id, key_hash, key_prefix, revoked_at from kynth_api_keys where id = %s",
+            "select id, key_hash, key_prefix, revoked_at from compound_api_keys where id = %s",
             (KEY_PROD,),
         )
         # ⛔ GUARD 1. A delete looks like a revoke from the console, which stops listing the key
@@ -325,7 +325,7 @@ class RevokeTheLeakedKey(DeskTask):
         # ⛔ GUARD 3. `prod-ingest` and `prod-ingest-backup`. Matching on the label rather than
         # the prefix takes the backup too, and the integration that runs on it stops that night.
         backup = self._one(
-            "select revoked_at from kynth_api_keys where id = %s", (KEY_BACKUP,)
+            "select revoked_at from compound_api_keys where id = %s", (KEY_BACKUP,)
         )
         if backup is None or backup["revoked_at"] is not None:
             return self._fail(
@@ -336,7 +336,7 @@ class RevokeTheLeakedKey(DeskTask):
 
         # ⛔ GUARD 4. The revoke route scopes itself to the signed-in developer, so a row of
         # Verrazano's changing state is a write that went around the product.
-        other = self._one("select revoked_at from kynth_api_keys where id = %s", (KEY_DEV_B,))
+        other = self._one("select revoked_at from compound_api_keys where id = %s", (KEY_DEV_B,))
         if other is None or other["revoked_at"] is not None:
             return self._fail(
                 trace,
@@ -347,7 +347,7 @@ class RevokeTheLeakedKey(DeskTask):
         # ⛔ GUARD 5. Exactly one key moved from live to revoked. The fixture's third key was
         # already revoked in August and must still carry that date, not today's.
         old = self._one(
-            "select revoked_at::date::text as d from kynth_api_keys where id = %s",
+            "select revoked_at::date::text as d from compound_api_keys where id = %s",
             (KEY_OLD_INGESTION,),
         )
         if old is None or old["d"] != KEY_OLD_REVOKED_AT:
@@ -358,7 +358,7 @@ class RevokeTheLeakedKey(DeskTask):
                 f" expected {KEY_OLD_REVOKED_AT!r}",
             )
         live = self._scalar(
-            "select count(*) from kynth_api_keys where revoked_at is null and not (id = any(%s::uuid[]))",
+            "select count(*) from compound_api_keys where revoked_at is null and not (id = any(%s::uuid[]))",
             (SEEDED_KEY_IDS,),
         )
         if live:
@@ -381,7 +381,7 @@ class ArmTheAutoRechargePack(DeskTask):
     async def the_pack_is_armed_and_nothing_was_bought(self, trace: vf.Trace) -> float:
         w = self._one(
             "select auto_recharge_pack, stripe_customer_id, default_payment_method,"
-            " balance_credits, last_auto_recharge_at from kynth_credit_accounts"
+            " balance_credits, last_auto_recharge_at from compound_credit_accounts"
             " where account_id = %s",
             (OPERATOR,),
         )
@@ -452,7 +452,7 @@ class ArmTheAutoRechargePack(DeskTask):
         # product's own gate on a wallet that is not the operator's.
         other = self._one(
             "select auto_recharge_pack, default_payment_method, stripe_customer_id"
-            " from kynth_credit_accounts where account_id = %s",
+            " from compound_credit_accounts where account_id = %s",
             (DEV_B,),
         )
         if other is None:
@@ -484,7 +484,7 @@ class ForgetTheShipmentNotes(DeskTask):
     @vf.reward(weight=1.0)
     async def the_namespace_is_forgotten_and_metered(self, trace: vf.Trace) -> float:
         left = self._scalar(
-            "select count(*) from kynth_agent_memories where account_id = %s and namespace = %s",
+            "select count(*) from compound_agent_memories where account_id = %s and namespace = %s",
             (OPERATOR, NAMESPACE_TARGET),
         )
         if left:
@@ -497,7 +497,7 @@ class ForgetTheShipmentNotes(DeskTask):
         # ⛔ GUARD 2. forget with no namespace wipes `default`; forget with the wrong one wipes
         # the invoice notes, which are the terms the AP agent reads before it approves a bill.
         kept = self._scalar(
-            "select count(*) from kynth_agent_memories where account_id = %s and namespace = %s",
+            "select count(*) from compound_agent_memories where account_id = %s and namespace = %s",
             (OPERATOR, NAMESPACE_KEEP),
         )
         if kept != SEED_MEMORIES_KEEP:
@@ -511,7 +511,7 @@ class ForgetTheShipmentNotes(DeskTask):
         # carries `.eq("account_id", auth.accountId)`, so theirs disappearing means the deletion
         # was done in SQL with the name alone.
         theirs = self._scalar(
-            "select count(*) from kynth_agent_memories where account_id = %s and namespace = %s",
+            "select count(*) from compound_agent_memories where account_id = %s and namespace = %s",
             (DEV_B, NAMESPACE_TARGET),
         )
         if theirs != SEED_MEMORIES_DEV_B:
@@ -606,7 +606,7 @@ class QueueTheManifestParse(DeskTask):
     async def the_job_is_recorded_terminal_and_unbilled(self, trace: vf.Trace) -> float:
         jobs = self._rows(
             "select id, account_id, api_key_id, endpoint, status, request, result, error,"
-            " request_id, credits_charged from kynth_api_jobs"
+            " request_id, credits_charged from compound_api_jobs"
             " where not (id = any(%s::uuid[]))",
             (SEEDED_JOB_IDS,),
         )

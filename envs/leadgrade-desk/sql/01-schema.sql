@@ -1,7 +1,7 @@
 -- LeadGrade's own tables, pulled from production `xowekqdsttxwbhfxvusa` on 2026-09-19.
 --
 -- Every one of the eight is a REAL TABLE (`pg_class.relkind = 'r'`), checked rather than assumed:
--- the 2026-09-10 kynth -> compound rename sweep left views behind in at least one sibling product
+-- the 2026-09-10 rename sweep to compound left views behind in at least one sibling product
 -- on this stack, and reading a view as a table is how a grader ends up measuring the wrong
 -- relation. LeadGrade has none. RLS is on for all eight in production and is reproduced in
 -- 03-rls.sql.

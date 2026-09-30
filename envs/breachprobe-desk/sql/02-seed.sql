@@ -9,7 +9,7 @@
 -- claimed for this environment's own rows and nothing on the shared stack can collide with it.
 --
 -- ⛔ THE TWO SHARED RELATIONS ARE NOT TRUNCATED. `compound_review_asks` and
--- `kynth_email_suppressions` are estate-wide, so this file deletes only the rows it owns: the
+-- `compound_email_suppressions` are estate-wide, so this file deletes only the rows it owns: the
 -- breachprobe app's asks, and the two addresses it seeds a suppression for. Truncating a table
 -- another environment also writes is how one fixture silently breaks another.
 --
@@ -35,7 +35,7 @@ truncate table public.breachprobe_scans,
                public.breachprobe_rescue_leads restart identity cascade;
 
 delete from public.compound_review_asks where app = 'breachprobe';
-delete from public.kynth_email_suppressions
+delete from public.compound_email_suppressions
  where email in ('opted-out@blackmoss.example', 'dana@vaultline.example');
 
 -- ── the scans ────────────────────────────────────────────────────────────────────────────────
@@ -200,5 +200,5 @@ values
 -- ── the suppression list ─────────────────────────────────────────────────────────────────────
 -- One address has opted out of Compound email. isSuppressed() is checked before the claim as
 -- well as before the send, so this address never gets a review-ask row at all.
-insert into public.kynth_email_suppressions (email, source, reason, created_at)
+insert into public.compound_email_suppressions (email, source, reason, created_at)
 values ('opted-out@blackmoss.example', 'unsubscribe', 'asked to stop', now() - interval '40 days');

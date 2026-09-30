@@ -1,17 +1,14 @@
 -- breachprobe-desk, the product's real tables, pulled from the shared production project
 -- xowekqdsttxwbhfxvusa on 2026-09-19 with the Supabase MCP.
 --
--- Five breachprobe_* tables, all of them genuine TABLES (pg_class.relkind = 'r'), unlike
--- parserail's compound_* relations which turned out to be views over kynth_* leftovers.
+-- Five breachprobe_* tables, all of them genuine TABLES (pg_class.relkind = 'r').
 --
--- ⛔ THE SUPPRESSION RELATION IS THE ONE PIECE OF THAT RENAME SWEEP THIS PRODUCT TOUCHES.
--- `src/lib/review-ask.ts` reads `compound_email_suppressions`, and in production that name is a
--- VIEW (relkind 'v') over `kynth_email_suppressions`. It is reproduced here with the same
--- topology rather than flattened into one table, because the shim is the product's live shape
--- and because isSuppressed() fails CLOSED: a suppression relation it cannot read is read as
--- "this address has opted out", so a missing view silently stops every review ask. The graders
--- read the kynth_* table underneath, so a write that arrives through the view and a cheat that
--- writes the table show up in the same place.
+-- ⛔ THE SUPPRESSION TABLE IS SHARED ESTATE-WIDE.
+-- `src/lib/review-ask.ts` reads `compound_email_suppressions`. Until 2026-09-29 production served
+-- that name as a view over an older table a rename sweep left behind; on 2026-09-29 the table
+-- itself was renamed, and it is a real table here too. isSuppressed() fails CLOSED: a suppression
+-- relation it cannot read is read as "this address has opted out", so a missing table silently
+-- stops every review ask.
 --
 -- `compound_review_asks` is a real table, shared estate-wide. Its partial unique index on
 -- (lower(email), app) is the one-ask-ever rule, and it is what makes the nightly's claim
@@ -134,24 +131,19 @@ create table if not exists public.compound_review_asks (
   ref             text
 );
 
-create unique index if not exists kynth_review_asks_user_id_app_key
+create unique index if not exists compound_review_asks_user_id_app_key
   on public.compound_review_asks using btree (user_id, app);
 
 -- ONE ASK EVER, and it is the database's job. claimReviewAsk() INSERTs and lets the index decide;
 -- a duplicate comes back as 23505 and is caught, which is the index working rather than a fault.
-create unique index if not exists kynth_review_asks_email_app
+create unique index if not exists compound_review_asks_email_app
   on public.compound_review_asks using btree (lower(email), app)
   where email is not null;
 
-create table if not exists public.kynth_email_suppressions (
-  email       text not null,
+create table if not exists public.compound_email_suppressions (
+  email       text primary key,
   source      text,
   reason      text,
   created_at  timestamptz not null default now()
 );
 
-create unique index if not exists kynth_email_suppressions_email_key
-  on public.kynth_email_suppressions using btree (email);
-
-create or replace view public.compound_email_suppressions as
-  select email, source, reason, created_at from public.kynth_email_suppressions;

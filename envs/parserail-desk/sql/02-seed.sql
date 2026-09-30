@@ -30,17 +30,17 @@ returns vector(768) language sql immutable as $$
                   from generate_series(1, 768) as i) || ']')::vector(768)
 $$;
 
-truncate table public.kynth_agent_memories,
-               public.kynth_api_jobs,
-               public.kynth_credit_ledger,
-               public.kynth_usage_events,
-               public.kynth_api_keys,
-               public.kynth_credit_accounts,
-               public.kynth_rate_limits,
+truncate table public.compound_agent_memories,
+               public.compound_api_jobs,
+               public.compound_credit_ledger,
+               public.compound_usage_events,
+               public.compound_api_keys,
+               public.compound_credit_accounts,
+               public.compound_rate_limits,
                public.all_access_user_subscriptions;
 
 -- wallets -------------------------------------------------------------------------------
-insert into public.kynth_credit_accounts
+insert into public.compound_credit_accounts
   (account_id, balance_credits, created_at, updated_at, stripe_customer_id,
    default_payment_method, auto_recharge_pack, webhook_secret, activated_at) values
   ('00000000-0000-4000-8000-0000000f3001', 4958, '2026-07-02T09:14:00Z', '2026-09-17T18:02:00Z',
@@ -54,7 +54,7 @@ insert into public.kynth_credit_accounts
 -- key_hash is sha256 of the full secret, which is how the product stores it and the only thing
 -- it ever stores. The secrets themselves live in parserail_desk/taskset.py so the harness can
 -- make a real bearer call; they are invented, they authenticate nothing anywhere else.
-insert into public.kynth_api_keys
+insert into public.compound_api_keys
   (id, account_id, key_prefix, key_hash, label, created_at, last_used_at, revoked_at) values
   -- ksk_live_11aa22bb33cc44dd55ee66ff77008811992200aa
   ('00000000-0000-4000-8000-0000000f3101', '00000000-0000-4000-8000-0000000f3001',
@@ -74,7 +74,7 @@ insert into public.kynth_api_keys
    'verrazano-prod', '2026-08-14T11:58:00Z', '2026-09-16T08:22:00Z', null);
 
 -- usage history -------------------------------------------------------------------------
-insert into public.kynth_usage_events
+insert into public.compound_usage_events
   (id, account_id, api_key_id, endpoint, units, credits_burned, request_id, model, created_at, meta) values
   ('00000000-0000-4000-8000-0000000f3301', '00000000-0000-4000-8000-0000000f3001',
    '00000000-0000-4000-8000-0000000f3101', 'parse', 1, 10, 'req_f1a2b3c4d5e6f708192a3b4c',
@@ -102,7 +102,7 @@ insert into public.kynth_usage_events
 -- compound_credits_charge writes a ledger row for every usage event and carries the running
 -- balance on it, so the chain below ends at the balance seeded above: Lindmark 5,000 bought,
 -- 42 burned, 4,958 left. Verrazano 100 bought, 22 burned, 78 left.
-insert into public.kynth_credit_ledger
+insert into public.compound_credit_ledger
   (id, account_id, delta, reason, balance_after, ref, created_at) values
   ('00000000-0000-4000-8000-0000000f3401', '00000000-0000-4000-8000-0000000f3001',
    5000, 'topup', 5000, 'cs_FIXTURE_lindmark_scale_0702', '2026-07-02T09:29:00Z'),
@@ -126,7 +126,7 @@ insert into public.kynth_credit_ledger
 -- async jobs ----------------------------------------------------------------------------
 -- `request` carries the redaction runJob's own redactRequest() applies: a base64 document is
 -- replaced by its length, never stored. A hand-written job row that keeps the bytes is a tell.
-insert into public.kynth_api_jobs
+insert into public.compound_api_jobs
   (id, account_id, api_key_id, endpoint, status, request, result, error, request_id,
    callback_url, credits_charged, created_at, updated_at) values
   ('00000000-0000-4000-8000-0000000f3501', '00000000-0000-4000-8000-0000000f3001',
@@ -148,7 +148,7 @@ insert into public.kynth_api_jobs
 -- agent memories ------------------------------------------------------------------------
 -- Two namespaces on the operator's account and one on the other developer's carrying the SAME
 -- NAME. /v1/memory forget takes a namespace, so the name alone does not say whose rows to take.
-insert into public.kynth_agent_memories
+insert into public.compound_agent_memories
   (id, account_id, namespace, content, metadata, embedding, created_at) values
   ('00000000-0000-4000-8000-0000000f3201', '00000000-0000-4000-8000-0000000f3001', 'shipment-notes',
    'Calder Pallet Works ships on Tuesdays out of Bay 4; anything booked Monday after 15:00 rolls a week.',

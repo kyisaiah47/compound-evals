@@ -1,8 +1,8 @@
 -- Row level security, the storage bucket and its policies.
 --
 -- Read out of the live project on 2026-09-19 with pg_policies and pg_get_functiondef. The three
--- helper functions are reproduced verbatim, including the `demo@kynth.studio` literal, which is
--- the old studio domain and is what the deployed function still says.
+-- helper functions are reproduced verbatim, including the demo account's address, which the
+-- deployed functions read as `demo@thecompound.tech` since 2026-09-29.
 --
 -- ⛔ WHY AN ENVIRONMENT NEEDS THIS AT ALL. Without RLS every grader's tenant check is enforced
 -- only by the grader. With it, the database refuses a cross-tenant write before the grader ever
@@ -29,7 +29,7 @@ as $function$
   join public.cd_tenants n on n.id = u.tenant_id
   where u.user_id = auth.uid()
     and n.is_demo = false
-    and coalesce(auth.jwt() ->> 'email', '') <> 'demo@kynth.studio'
+    and coalesce(auth.jwt() ->> 'email', '') <> 'demo@thecompound.tech'
 $function$;
 
 create or replace function public.cd_can_write(t uuid)
@@ -45,7 +45,7 @@ as $function$
     where u.user_id = auth.uid()
       and u.tenant_id = t
       and n.is_demo = false
-      and coalesce(auth.jwt() ->> 'email', '') <> 'demo@kynth.studio'
+      and coalesce(auth.jwt() ->> 'email', '') <> 'demo@thecompound.tech'
   )
 $function$;
 

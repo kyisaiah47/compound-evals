@@ -15,7 +15,7 @@ enabled and NO POLICY, which is the correct shape for a mailing list: only the s
 see an address. A grader holding the publishable key reads zero rows and scores every task 0.0.
 
 The three tables are real tables, not views. Checked against pg_class on the production project
-before a line of this was written; parserail's turned out to be views over older `kynth_*` names.
+before a line of this was written; parserail's turned out to be views over older table names.
 """
 
 from __future__ import annotations

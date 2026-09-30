@@ -22,7 +22,7 @@ alter table public.breachprobe_leads         enable row level security;
 alter table public.breachprobe_smoketests    enable row level security;
 alter table public.breachprobe_rescue_leads  enable row level security;
 alter table public.compound_review_asks      enable row level security;
-alter table public.kynth_email_suppressions  enable row level security;
+alter table public.compound_email_suppressions enable row level security;
 
 -- The service role is the only client that touches any of this, exactly as in production.
 grant usage on schema public to service_role;
@@ -32,7 +32,6 @@ grant all on public.breachprobe_leads        to service_role;
 grant all on public.breachprobe_smoketests   to service_role;
 grant all on public.breachprobe_rescue_leads to service_role;
 grant all on public.compound_review_asks     to service_role;
-grant all on public.kynth_email_suppressions to service_role;
 grant all on public.compound_email_suppressions to service_role;
 
 -- PostgREST refuses a relation it cannot see in its schema cache, so anon and authenticated are

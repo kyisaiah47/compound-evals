@@ -3,7 +3,7 @@
 --
 -- MatchLine has exactly TWO tables and no functions, no triggers and no views. Both are real
 -- TABLES (pg_class.relkind = 'r'), checked rather than assumed: parserail's turned out to be
--- VIEWS over older kynth_* tables left behind by a rename sweep, so relkind is read now for
+-- VIEWS over older tables left behind by a rename sweep, so relkind is read now for
 -- every product.
 --
 --   ml_matches   one free check. The route inserts it `pending` with both documents; the local

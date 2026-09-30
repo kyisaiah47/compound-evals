@@ -3,7 +3,7 @@
 -- pg_constraint for the keys and the CHECKs, pg_class for relkind.
 --
 -- ⛔ EVERY ONE OF THESE IS A REAL TABLE, relkind 'r'. Checked, because another product on this
--- stack turned out to be serving VIEWS over older `kynth_*` tables left by a rename sweep. Nine
+-- stack turned out to be serving VIEWS over older tables left by a rename sweep. Nine
 -- matchrail_* relations, nine 'r', and none of them is a view over anything.
 --
 -- ⛔ AND THERE IS NO TRIGGER ANYWHERE ON THIS PREFIX. pg_trigger returned zero non-internal rows

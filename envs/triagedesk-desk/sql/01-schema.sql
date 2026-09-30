@@ -2,7 +2,7 @@
 -- on 2026-09-19 with the Supabase MCP.
 --
 -- ⛔ ALL TEN ARE REAL TABLES, CHECKED RATHER THAN ASSUMED. `pg_class.relkind` is 'r' for every
--- one of them in production, and RLS is on for all ten. The 2026-09-10 kynth -> compound rename
+-- one of them in production, and RLS is on for all ten. The 2026-09-10 rename to compound
 -- sweep left VIEWS over older tables behind in at least one sibling product on this stack, and
 -- reading a view as a table is how a grader ends up measuring the wrong relation. TriageDesk has
 -- none.

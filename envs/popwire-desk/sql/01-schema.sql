@@ -8,7 +8,7 @@
 -- approximation of them.
 --
 -- ⛔ ALL FOUR ARE REAL TABLES, relkind 'r'. Checked, because parserail's turned out to be
--- VIEWS over older kynth_* tables a rename sweep left behind, and a view accepts a
+-- VIEWS over older tables a rename sweep left behind, and a view accepts a
 -- grader's INSERT in a way that proves nothing. Measured 2026-09-19:
 --   popwire_posts r, popwire_subscribers r, popwire_email_sends r, social_posts r.
 --

@@ -83,19 +83,16 @@ Two developers on one platform, everything invented.
 (rule 11). `auth.users` is genuinely shared by every environment on this stack; a colliding uuid
 fails on `users_pkey` and the second `up.sh` to run is the one that finds out.
 
-## The schema is a shim, and the graders read through it
+## The schema
 
-⛔ **The tables are named `kynth_*` and the product never says that name anywhere.** Every call
-site reads `compound_api_keys`, `compound_credit_accounts`, `compound_usage_events`,
+Every call site reads `compound_api_keys`, `compound_credit_accounts`, `compound_usage_events`,
 `compound_api_jobs`, `compound_agent_memories`, `compound_rate_limits` and four `compound_*` RPCs.
-Measured against production (`pg_class.relkind`) on 2026-09-19: **all seven of those relations are
-views**, each over one `kynth_*` table the 2026-09-10 rename sweep left behind, and the four RPCs
-are SQL wrappers around `kynth_*` functions.
+On 2026-09-19 production served all seven relations as views over older tables that the
+2026-09-10 rename sweep left behind, and the four RPCs as SQL wrappers. On 2026-09-29 production
+renamed the tables and functions themselves to `compound_*`, and the wrappers were removed.
 
-`sql/01-schema.sql` reproduces that topology exactly rather than flattening it, because the shim is
-the product's live shape. `parserail_desk/db.py` then reads the `kynth_*` tables underneath on
-purpose: a write that reaches the view has to arrive on the table, and a cheat that writes the table
-directly has to show up in the same place.
+`sql/01-schema.sql` and `sql/04-functions.sql` reproduce the current shape: seven real tables and
+the functions that write them. `parserail_desk/db.py` reads the same tables the app writes.
 
 RLS is enabled on all seven tables with **zero policies**, which is production's own posture. The
 only client that touches them is the service-role admin client. That is what makes the tenancy
@@ -186,7 +183,7 @@ printed line. Forty-three expectations with the app up, thirty-eight without it.
 ## Files
 
 ```
-sql/01-schema.sql      the kynth_* tables and the compound_* views over them
+sql/01-schema.sql      the seven compound_* tables
 sql/02-seed.sql        the fixture, TRUNCATE + INSERT, re-applied before every episode
 sql/03-rls.sql         RLS on, zero policies, service-role grants: production's own posture
 sql/04-functions.sql   the credit, rate-limit and memory-search RPCs, verbatim from production

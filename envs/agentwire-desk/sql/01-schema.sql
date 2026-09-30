@@ -7,7 +7,7 @@
 -- are production's, not an approximation of them.
 --
 -- ⛔ ALL THREE ARE REAL TABLES, relkind 'r'. Checked, because parserail's turned out to
--- be VIEWS over older kynth_* tables a rename sweep left behind, and a view accepts a
+-- be VIEWS over older tables a rename sweep left behind, and a view accepts a
 -- grader's INSERT in a way that proves nothing. `select relkind from pg_class where
 -- relname like 'agentwire%'` answered r for agentwire_posts, agentwire_subscribers and
 -- agentwire_email_sends.

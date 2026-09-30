@@ -4,11 +4,9 @@
 rows itself. Asking the app whether it succeeded is asking the thing under test to mark its own
 work, and an HTTP 200 is what a broken write looks like from the outside.
 
-⛔ AND IT READS THE `kynth_*` TABLES, NOT THE `compound_*` VIEWS THE APP WRITES THROUGH.
-In this product every name the app says is a shim: `compound_api_keys` and its six siblings are
-simple views over `kynth_api_keys` and so on, left behind by the 2026-09-10 rename sweep. Reading
-the table underneath is deliberate. A write that reaches the view has to arrive on the table or
-the shim is broken, and a cheat that writes the table directly has to show up in the same place.
+It reads the same `compound_*` tables the app writes. Until 2026-09-29 those names were views
+over older tables a rename sweep left behind; production renamed the tables that day, and the
+fixture schema matches it.
 """
 
 from __future__ import annotations

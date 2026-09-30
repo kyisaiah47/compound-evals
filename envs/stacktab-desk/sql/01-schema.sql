@@ -3,7 +3,7 @@
 -- constraint through the Supabase MCP; nothing here is inferred from the TypeScript types.
 --
 -- ⛔ THEY ARE REAL TABLES, NOT VIEWS. parserail's `compound_*` names turned out to be views over
--- older `kynth_*` tables left behind by the 2026-09-10 rename sweep, so this was checked first:
+-- older tables left behind by the 2026-09-10 rename sweep, so this was checked first:
 --   select c.relname, c.relkind from pg_class c join pg_namespace n on n.oid = c.relnamespace
 --   where n.nspname = 'public' and c.relname like 'stacktab%';
 -- answered relkind 'r' for all five. The graders read these names directly.

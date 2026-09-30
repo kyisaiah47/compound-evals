@@ -127,13 +127,12 @@ that do use it and leaving a neighbour broken is the same as breaking it.
 
 ## The schema
 
-Five real `breachprobe_*` tables, all of them genuine tables (`pg_class.relkind = 'r'`), unlike
-parserail's `compound_*` relations which turned out to be views over `kynth_*` leftovers. One piece
-of that rename sweep does reach this product: `src/lib/review-ask.ts` reads
-`compound_email_suppressions`, and in production that name is a **VIEW** over
-`kynth_email_suppressions`. `sql/01-schema.sql` reproduces the shim rather than flattening it,
-because `isSuppressed()` fails closed: a suppression relation it cannot read is read as "this
-address has opted out", so a missing view silently stops every review ask and nothing errors.
+Five real `breachprobe_*` tables, all of them genuine tables (`pg_class.relkind = 'r'`).
+`src/lib/review-ask.ts` also reads the shared `compound_email_suppressions` table. Until 2026-09-29
+production served that name as a view over an older table a rename sweep left behind; on
+2026-09-29 the table itself was renamed, and `sql/01-schema.sql` creates it as a real table.
+`isSuppressed()` fails closed: a suppression relation it cannot read is read as "this address has
+opted out", so a missing table silently stops every review ask and nothing errors.
 
 RLS is enabled on all six tables with **zero policies**, read straight off `pg_policies`, which is
 production's own posture. That is not an oversight: this product has no browser-side database
@@ -228,7 +227,7 @@ without. Both measured on 2026-09-19 and kept in `demo/graders.txt` and
 
 ```
 sql/01-schema.sql      the five breachprobe_* tables, the shared review-ask table, and the
-                       compound_email_suppressions view over kynth_email_suppressions
+                       shared compound_email_suppressions table
 sql/02-seed.sql        the fixture, TRUNCATE + INSERT, re-applied before every episode
 sql/03-rls.sql         RLS on, zero policies, service-role grants: production's own posture
 breachprobe_desk/db.py       Postgres access for the graders

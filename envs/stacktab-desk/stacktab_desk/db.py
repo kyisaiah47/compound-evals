@@ -11,7 +11,7 @@ enabled and NO POLICY, which is the correct shape: only the service role can see
 A grader holding the publishable key would read zero rows and score every task 0.0.
 
 The five tables are real tables, not views. Checked against pg_class on the production project
-before a line of this was written; parserail's turned out to be views over older `kynth_*` names.
+before a line of this was written; parserail's turned out to be views over older table names.
 """
 
 from __future__ import annotations
