@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import PageViews from "@/components/site-view/PageViews";
+import { SimpleEnvironments } from "@/components/site-view/SimplePages";
 import { Chip, Legend, Mk, SecHead, Shell, ViewHead } from "@/components/Shell";
 import { getEnvironments, scoredCount, totals } from "@/lib/data";
 
@@ -12,6 +14,7 @@ export default function EnvironmentsPage() {
   const widest = [...envs].sort((a, b) => b.counts.cheats - a.counts.cheats).slice(0, 6);
 
   return (
+    <PageViews simpleView={<SimpleEnvironments />} consoleView={
     <Shell
       active="environments"
       envs={envs}
@@ -160,6 +163,6 @@ export default function EnvironmentsPage() {
           </table>
         </div>
       </Reveal>
-    </Shell>
+    </Shell>} />
   );
 }

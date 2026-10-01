@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import PageViews from "@/components/site-view/PageViews";
+import { SimpleHome } from "@/components/site-view/SimplePages";
 import { Chip, RailMk, Legend, Mk, SecHead, Shell, ViewHead } from "@/components/Shell";
 import { getEnvironments, lastProved, modelRows, scoreLines, scoredCount, toScore, totals } from "@/lib/data";
 
@@ -15,6 +17,7 @@ export default function ScorecardPage() {
   const proved = lastProved(envs);
 
   return (
+    <PageViews simpleView={<SimpleHome />} consoleView={
     <Shell
       active="scorecard"
       envs={envs}
@@ -241,6 +244,6 @@ export default function ScorecardPage() {
           </table>
         </div>
       </Reveal>
-    </Shell>
+    </Shell>} />
   );
 }

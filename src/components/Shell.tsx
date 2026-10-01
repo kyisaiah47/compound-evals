@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Mark from "@/components/Mark";
 import Ph from "@/components/Ph";
+import ViewControls from "@/components/site-view/ViewControls";
 import { type Environment, lastProved, scoredCount, totals } from "@/lib/data";
 
 /** A product's own mark, out of the estate's icon registry. Every row naming a product carries it. */
@@ -109,6 +110,7 @@ export function Shell({
         <span>Every score carries the environment that produced it.</span>
         <a href="https://thecompound.tech">Compound Labs</a>
         <span className="end n">Graders proved {proved}</span>
+        <ViewControls />
       </footer>
     </>
   );

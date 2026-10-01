@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import Ph from "@/components/Ph";
 import Reveal from "@/components/Reveal";
+import PageViews from "@/components/site-view/PageViews";
+import { SimpleEnvironment } from "@/components/site-view/SimplePages";
 import { Chip, RailMk, Legend, SecHead, Shell, ViewHead } from "@/components/Shell";
 import { getEnvironment, getEnvironments, scoredCount, toScore } from "@/lib/data";
 
@@ -28,6 +30,7 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
   const writes = [...new Set(env.tasks.flatMap((t) => t.writes))];
 
   return (
+    <PageViews simpleView={<SimpleEnvironment product={env.product} />} consoleView={
     <Shell
       active={env.product}
       envs={envs}
@@ -259,6 +262,6 @@ export default async function ProductPage({ params }: { params: Promise<{ produc
           </div>
         </Reveal>
       ) : null}
-    </Shell>
+    </Shell>} />
   );
 }
