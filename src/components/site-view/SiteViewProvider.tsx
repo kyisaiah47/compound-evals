@@ -52,6 +52,7 @@ export default function SiteViewProvider({ children, welcome: copy }: { children
   useEffect(() => {
     const explicit = new URLSearchParams(window.location.search).get('view');
     if (explicit === 'simple' || explicit === 'console') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- the ?view= choice is only readable after hydration
       choose(explicit);
       return;
     }

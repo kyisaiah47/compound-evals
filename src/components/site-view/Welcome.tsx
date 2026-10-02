@@ -47,6 +47,7 @@ export default function Welcome({ intro, illustration, consoleLine }: WelcomeCop
   useEffect(() => {
     let disabled = false;
     try { disabled = localStorage.getItem(OFF_KEY) === '1'; } catch {}
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is only readable after hydration
     setOff(disabled);
     if (path === '/' && !disabled && new URLSearchParams(window.location.search).get('welcome') !== '0') show();
     window.addEventListener(WELCOME_EVENT, show);
