@@ -92,7 +92,7 @@ export default function Welcome({ intro, illustration, consoleLine }: WelcomeCop
 
       <section className="sv-welcome-choose">
         <div className="sv-welcome-choose-head">
-          <h3>How would you like to explore?</h3>
+          <h3>Explore the environments.</h3>
           <p>You can switch anytime.</p>
         </div>
         <div className="sv-choices">
@@ -104,7 +104,7 @@ export default function Welcome({ intro, illustration, consoleLine }: WelcomeCop
           <button type="button" onClick={() => select('simple')}>
             <b>Simple</b>
             <strong>Start with the essentials.</strong>
-            <span>A roomier overview with details you can open as you go.</span>
+            <span>The overview gives details more room, and you can open them as you go.</span>
           </button>
         </div>
       </section>
@@ -123,7 +123,7 @@ export default function Welcome({ intro, illustration, consoleLine }: WelcomeCop
               } catch {}
             }}
           />
-          Don&apos;t open this when I come back
+          This remains closed when I come back.
         </label>
       </footer>
     </dialog>

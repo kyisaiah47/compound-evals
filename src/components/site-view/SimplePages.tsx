@@ -119,7 +119,7 @@ export function SimpleHome() {
           <h2>Open one product&rsquo;s tasks and scores.</h2>
           <p>Each environment is a real product with seeded state, named work, and guards that read the database.</p>
           <EnvPicker options={envs.map((e) => ({ value: e.product, label: `${e.product}: ${plural(e.tasks.length, 'task', 'tasks')}` }))} />
-          <p className="sv-terms">No account. The environments and their graders are MIT licensed on GitHub.</p>
+          <p className="sv-terms">You need no account. The environments and their graders are MIT licensed on GitHub.</p>
         </div>
       </section>
 
@@ -159,17 +159,17 @@ export function SimpleHome() {
       </section>
 
       <section className="sv-section" aria-labelledby="sv-cost">
-        <Intro label="04 / COST" title="Free to read and free to run." id="sv-cost">
+        <Intro label="04 / COST" title="You can read and run it free." id="sv-cost">
           Nothing on this site is for sale. The environments, graders and results are in a public repository under the MIT licence.
         </Intro>
-        <Disclosure title="What do the three states mean?">
+        <Disclosure title="The three states and their meanings">
           <ul className="sv-plain">
-            <li><strong>Held.</strong> The guard passed on the state the model left.</li>
-            <li><strong>Caught.</strong> The guard refused it, and names what it found.</li>
+            <li><strong>Held.</strong> The guard accepted the state left by the model.</li>
+            <li><strong>Caught.</strong> The guard rejected it and reports what it found.</li>
             <li><strong>Unrun.</strong> No model has been driven through this task.</li>
           </ul>
         </Disclosure>
-        <Disclosure title="Why grade the database and not the page?">
+        <Disclosure title="Why the grader reads the database instead of the page">
           <p>A web app returns 200 and paints a success message whether or not the write landed. A grader that reads the page cannot tell a completed task from a convincing failure, so every guard here reads rows.</p>
         </Disclosure>
       </section>
@@ -212,7 +212,7 @@ export function SimpleEnvironments() {
         intro={`${all.environments} environments are resettable and gradable. Each one is a real product with seeded state, named work, and guards that read the database rather than the transcript.`}
       />
       <section className="sv-section" aria-labelledby="sv-envs">
-        <Intro label="THE LIST" title="Pick one to read its tasks." id="sv-envs">The figure beside an environment is its tasks. Where a run exists it reads scored over total.</Intro>
+        <Intro label="THE LIST" title="Pick one to read its tasks." id="sv-envs">The figure beside an environment shows its tasks. Where a run exists, it shows the scored total.</Intro>
         <ul className="sv-rows">
           {envs.map((env) => <li key={env.product}><EnvRow env={env} /></li>)}
         </ul>
@@ -251,7 +251,7 @@ export function SimpleEnvironment({ product }: { product: string }) {
       </section>
       {env.not_gradable.length || open.length ? (
         <section className="sv-section" aria-labelledby="sv-limits">
-          <Intro label="LIMITS" title="What this environment does not grade." id="sv-limits">Stated beside the tasks rather than left out.</Intro>
+          <Intro label="LIMITS" title="What this environment does not grade." id="sv-limits">The suite states findings beside the tasks.</Intro>
           {env.not_gradable.map((n) => <Disclosure key={n.what} title={n.what}><p>{n.why}</p></Disclosure>)}
           {open.map((d) => <Disclosure key={d.summary} title={`Open finding: ${d.summary}`}><p>{d.where}. Severity {d.severity}.</p></Disclosure>)}
         </section>
