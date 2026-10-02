@@ -11,7 +11,7 @@ export default function NotFound() {
     <PageViews
       simpleView={<SimpleNotFound />}
       consoleView={
-        <Shell active="" envs={envs} claim={<>This address is not a page on Compound Evals.</>} rail={null}>
+        <Shell active="" envs={envs} claim={<>This address is not a page on EvalBench.</>} rail={null}>
           <ViewHead kick="Not found" icon="circle-dashed" title="Not an environment">
             Every environment is listed on <Link href="/environments">one page</Link>, and the scores are on the{" "}
             <Link href="/">scorecard</Link>.

@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { SV_NAME, Mark } from './config';
 import ViewControls from './ViewControls';
 
-const REPO = 'https://github.com/kyisaiah47/compound-evals';
+const REPO = 'https://github.com/kyisaiah47/evalbench';
 const NAV = [
   { href: '/#start', label: 'Pick an environment' },
   { href: '/environments', label: 'Every environment' },

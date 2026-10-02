@@ -1,6 +1,6 @@
 # Plan: an eval environment per product, then publish
 
-Brand: **Compound Evals**. The umbrella is Evals, the things inside it are environments, and
+Brand: **EvalBench**. The umbrella is Evals, the things inside it are environments, and
 each product's is named for the product, for example the Unemploy Claims Desk Environment.
 
 Isaiah, 2026-09-19. Recorded here so it does not get lost between sessions.

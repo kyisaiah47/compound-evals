@@ -6,7 +6,7 @@ import { welcomeCopy } from "@/components/site-view/welcome-content";
 import Analytics from "@/components/Analytics";
 
 export const metadata: Metadata = {
-  title: { default: "Compound Evals", template: "%s · Compound Evals" },
+  title: { default: "EvalBench", template: "%s · EvalBench" },
   description:
     "Resettable product environments and the scores models earned in them. Every score is read from the rows the product wrote.",
 };

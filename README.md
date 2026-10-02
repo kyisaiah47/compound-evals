@@ -1,4 +1,4 @@
-# Compound Evals
+# EvalBench
 
 Agent evaluation environments for real back-office software, graded on backend state.
 

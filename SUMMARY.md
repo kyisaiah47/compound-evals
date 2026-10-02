@@ -1,11 +1,11 @@
-# Compound Evals
+# EvalBench
 
 One RL evaluation environment per Compound Labs product with a real backend. An environment is a
 resettable sandbox of the real product that an AI agent acts in, and its graders read Postgres
 rows rather than the rendered page, because a web app returns 200 and paints a success toast
 whether or not the write landed.
 
-The umbrella is **Compound Evals**, the things inside it are **environments**, and what comes out
+The umbrella is **EvalBench**, the things inside it are **environments**, and what comes out
 is **eval results**.
 
 ```

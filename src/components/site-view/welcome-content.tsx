@@ -11,7 +11,7 @@ export function welcomeCopy(): WelcomeCopy {
       <>
         <h2 id="sv-welcome-title">Did the AI agent really do the task, or only make it look done?</h2>
         <p>
-          Compound Evals drives a model through a real product, then reads the rows the product wrote.
+          EvalBench drives a model through a real product, then reads the rows the product wrote.
           A task counts only when the database holds what the task asked for.
         </p>
       </>

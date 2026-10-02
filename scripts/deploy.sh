@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sanctioned Cloudflare deployment path for the public Compound Evals console.
+# Sanctioned Cloudflare deployment path for the public EvalBench console.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

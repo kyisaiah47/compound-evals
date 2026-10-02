@@ -5,7 +5,7 @@ import { SimpleHeader, SimpleFooter } from './SimpleChrome';
 import Disclosure from './Disclosure';
 import EnvPicker from './EnvPicker';
 
-/* COMPOUND EVALS' SIMPLE PAGES. Server components: every count, score and sentence is read off
+/* EVALBENCH'S SIMPLE PAGES. Server components: every count, score and sentence is read off
  * src/data/environments.json, which scripts/build-data.mjs compiles from envs/*\/results.json.
  * The picker and the disclosures are the client parts. */
 
@@ -177,7 +177,7 @@ export function SimpleHome() {
       <nav className="sv-next" aria-label="Next steps">
         <Link href="/environments">Every environment <span aria-hidden="true">{'↗'}</span></Link>
         {ex ? <Link href={`/${ex.product}`}>The example&rsquo;s environment <span aria-hidden="true">{'↗'}</span></Link> : null}
-        <a href="https://github.com/kyisaiah47/compound-evals" rel="noreferrer">Read the source <span aria-hidden="true">{'↗'}</span></a>
+        <a href="https://github.com/kyisaiah47/evalbench" rel="noreferrer">Read the source <span aria-hidden="true">{'↗'}</span></a>
       </nav>
     </Chrome>
   );
@@ -269,11 +269,11 @@ export function SimpleEnvironment({ product }: { product: string }) {
 export function SimpleNotFound() {
   return (
     <Chrome>
-      <Head label="NOT FOUND" title="Not an environment." intro="This address is not a page on Compound Evals. Every environment is listed on one page." />
+      <Head label="NOT FOUND" title="Not an environment." intro="This address is not a page on EvalBench. Every environment is listed on one page." />
       <nav className="sv-next" aria-label="Next steps">
         <Link href="/environments">Every environment <span aria-hidden="true">{'↗'}</span></Link>
         <Link href="/">The scorecard <span aria-hidden="true">{'↗'}</span></Link>
-        <a href="https://github.com/kyisaiah47/compound-evals" rel="noreferrer">Read the source <span aria-hidden="true">{'↗'}</span></a>
+        <a href="https://github.com/kyisaiah47/evalbench" rel="noreferrer">Read the source <span aria-hidden="true">{'↗'}</span></a>
       </nav>
     </Chrome>
   );

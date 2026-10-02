@@ -1,4 +1,4 @@
-/* The Simple view's names, mapped onto Compound Evals' own tokens in globals.css. The register
+/* The Simple view's names, mapped onto EvalBench's own tokens in globals.css. The register
  * carries no hue of its own, so the action colour is its brightest ink, as on the Console. */
 :root {
   --sv-ground: var(--ground);
@@ -29,7 +29,7 @@
 .foot .sv-tools button { min-height: 32px; color: var(--ink-3); }
 .foot .sv-tools button[aria-pressed='true'] { color: var(--ink-1); }
 
-/* ── Compound Evals' own Simple pieces ──────────────────────────────────────────────────── */
+/* ── EvalBench's own Simple pieces ──────────────────────────────────────────────────── */
 .sv-brand .sv-mark svg, .sv-brand-static .sv-mark svg { width: 100%; height: 100%; }
 .sv-verdict[data-tone='held'] { color: var(--held); }
 .sv-verdict[data-tone='caught'] { color: var(--caught); }

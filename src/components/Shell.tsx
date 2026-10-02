@@ -40,7 +40,7 @@ export function Shell({
       <header className="mast">
         <Link href="/" className="brand">
           <Mark />
-          <b>Compound Evals</b>
+          <b>EvalBench</b>
         </Link>
         <nav className="nav" aria-label="Evals surfaces">
           <Link href="/" className={active === "scorecard" ? "on" : undefined}>
@@ -106,7 +106,7 @@ export function Shell({
       </main>
 
       <footer className="foot">
-        <span className="sig"><Mark className="mark" />Compound Evals</span>
+        <span className="sig"><Mark className="mark" />EvalBench</span>
         <span>Every score carries the environment that produced it.</span>
         <a href="https://thecompound.tech">Compound Labs</a>
         <span className="end n">Graders proved {proved}</span>
