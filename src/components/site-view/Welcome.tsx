@@ -92,7 +92,7 @@ export default function Welcome({ intro, illustration, consoleLine }: WelcomeCop
 
       <section className="sv-welcome-choose">
         <div className="sv-welcome-choose-head">
-          <h3>Explore the environments.</h3>
+          <h3>Which EvalBench environment would you like to explore?</h3>
           <p>You can switch anytime.</p>
         </div>
         <div className="sv-choices">

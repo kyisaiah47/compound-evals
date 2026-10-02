@@ -9,7 +9,7 @@ export function welcomeCopy(): WelcomeCopy {
   return {
     intro: (
       <>
-        <h2 id="sv-welcome-title">The database check shows whether the AI agent completed the task or only made it look done.</h2>
+        <h2 id="sv-welcome-title">Did the AI agent complete the task, or did it only make the task look complete?</h2>
         <p>
           EvalBench drives a model through a real product, then reads the rows the product wrote.
           A task counts only when the database holds what the task asked for.
